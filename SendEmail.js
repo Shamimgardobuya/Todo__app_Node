@@ -1,30 +1,24 @@
 const nodemailer = require("nodemailer");
 require('dotenv')
 
-// Looking to send emails in production? Check out our Email API/SMTP product!
-var transport = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
-    auth: {
-      user: "038d59538b17cb",
-      pass: "a0135d3e1cc36a"
-    }
+var transport = nodemailer.createTransport({ //using mailhog
+  host: 'localhost',
+  port: 1025,
+  secure: false, 
   });
 
 
-// const mailOptions = {
-//     from: process.env.EMAIL_FROM_ADDRESS,
-//     to: user_email,
-//     subject: 'Task Reminder Time',
-//     text: 'Your task reminder time is almost up.'. edit ,
-//   };
+
+  const sendEmailToUser = async (user, task) => {
+    return await transport.sendMail({
+      from: process.env.EMAIL_FROM_ADDRESS,
+      to: user.email,
+      subject: 'Task Reminder',
+      text: `Your task "${task.title}" is due: ${task.description} at ${task.reminder_time}`
+    });
+  };
+  
 
 
-module.exports = transport;
-// transport.sendMail({}, (error, info) => {
-//     if (error) {
-//     console.error('Error occurred:', error);
-//     } else {
-//     console.log('Email sent successfully:', info.response);
-//     }
-//  });
+module.exports = { sendEmailToUser };
+
